@@ -7,13 +7,28 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
-
+  name: Azure Pipelines
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+  displayName: 'Use Terraform latest'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: 'terraform init'
+  inputs:
+    command: init
+
+- task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV2@2
+  displayName: 'Terraform : plan'
+  inputs:
+    command: plan
+    commandOptions: '-out tfplan'
+    environmentServiceNameAzureRM: 'KRtest_ServiceConnection'
+
+- task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV2@2
+  displayName: 'Terraform : azurerm'
+  inputs:
+    command: apply
+    environmentServiceNameAzureRM: 'KRtest_ServiceConnection'
+    backendServiceArm: 'KRtest_ServiceConnection'
+
+
