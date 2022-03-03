@@ -15,7 +15,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "KR_TFResourceGroup"
+  name     = "KR_GITRG"
   location = "Australia East"
   
   tags = {
